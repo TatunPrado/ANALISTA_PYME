@@ -1,0 +1,35 @@
+﻿<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 600 200" width="100%" height="100%">
+  <defs>
+    <style>
+      @import url('https://fonts.googleapis.com/css2?family=Inter:wght@300;700&amp;display=swap');
+      .klar { font-family: 'Inter', sans-serif; font-weight: 700; font-size: 42px; fill: #134078; }
+      .analytics { font-family: 'Inter', sans-serif; font-weight: 300; font-size: 42px; fill: #134078; }
+      .tagline { font-family: 'Inter', sans-serif; font-weight: 400; font-size: 11px; fill: #4B5563; }
+    </style>
+  </defs>
+  <!-- Capas que se Revelan -->
+  <g transform="translate(25, 25)">
+    <!-- Bottom layer (revealed part) -->
+    <rect x="10" y="10" width="140" height="140" fill="#134078" rx="6"/>
+    <!-- Accent stripe revealed -->
+    <rect x="10" y="90" width="140" height="8" fill="#14B8A6"/>
+    <!-- Data points on bottom layer -->
+    <circle cx="40" cy="120" r="3" fill="#63B3ED" opacity="0.6"/>
+    <circle cx="60" cy="115" r="2" fill="#63B3ED" opacity="0.4"/>
+    <circle cx="120" cy="125" r="3" fill="#63B3ED" opacity="0.5"/>
+    <!-- Top layer (sliding up to reveal) -->
+    <rect x="0" y="0" width="140" height="140" fill="#EBF4FF" rx="6" stroke="#BEE3F8" stroke-width="1.5"/>
+    <!-- Top layer visual -->
+    <rect x="20" y="30" width="100" height="8" fill="#BEE3F8" rx="2"/>
+    <rect x="20" y="45" width="80" height="6" fill="#BEE3F8" rx="2"/>
+    <rect x="20" y="58" width="95" height="6" fill="#BEE3F8" rx="2"/>
+    <rect x="20" y="75" width="60" height="6" fill="#BEE3F8" rx="2"/>
+    <!-- Arrow indicating reveal direction -->
+    <polygon points="130,20 125,30 135,30" fill="#14B8A6" opacity="0.5"/>
+    <line x1="100" y1="25" x2="128" y2="25" stroke="#14B8A6" stroke-width="1.5" opacity="0.5"/>
+  </g>
+  <!-- Text -->
+  <text x="210" y="78" class="klar">Klar</text>
+  <text x="290" y="78" class="analytics">Analytics</text>
+  <text x="210" y="103" class="tagline">Diagnóstico empresarial con inteligencia artificial</text>
+</svg>

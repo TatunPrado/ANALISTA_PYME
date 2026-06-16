@@ -1,0 +1,44 @@
+﻿<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 600 200" width="100%" height="100%">
+  <defs>
+    <style>
+      @import url('https://fonts.googleapis.com/css2?family=Inter:wght@300;700&amp;display=swap');
+      .klar { font-family: 'Inter', sans-serif; font-weight: 700; font-size: 42px; fill: #134078; }
+      .analytics { font-family: 'Inter', sans-serif; font-weight: 300; font-size: 42px; fill: #134078; }
+      .tagline { font-family: 'Inter', sans-serif; font-weight: 400; font-size: 11px; fill: #4B5563; }
+    </style>
+  </defs>
+  <!-- Señal / Indicador -->
+  <g transform="translate(20, 30)">
+    <!-- Axis line -->
+    <line x1="0" y1="130" x2="170" y2="130" stroke="#BEE3F8" stroke-width="2"/>
+    <!-- Tick marks -->
+    <line x1="20" y1="125" x2="20" y2="135" stroke="#BEE3F8" stroke-width="1.5"/>
+    <line x1="50" y1="125" x2="50" y2="135" stroke="#BEE3F8" stroke-width="1.5"/>
+    <line x1="80" y1="125" x2="80" y2="135" stroke="#BEE3F8" stroke-width="1.5"/>
+    <line x1="110" y1="125" x2="110" y2="135" stroke="#BEE3F8" stroke-width="1.5"/>
+    <line x1="140" y1="125" x2="140" y2="135" stroke="#BEE3F8" stroke-width="1.5"/>
+    <!-- Baseline (flat) -->
+    <polyline points="10,130 20,128 35,126 50,129 65,131 80,127 95,130 110,128 115,130"
+              fill="none" stroke="#63B3ED" stroke-width="2" stroke-linejoin="round"/>
+    <!-- The peak - signal detected -->
+    <polyline points="115,130 125,45 140,128"
+              fill="none" stroke="#134078" stroke-width="3" stroke-linejoin="round"/>
+    <!-- Peak dot -->
+    <circle cx="125" cy="45" r="7" fill="#134078"/>
+    <circle cx="125" cy="45" r="3" fill="#14B8A6"/>
+    <!-- Confidence band -->
+    <rect x="115" y="125" width="25" height="10" fill="#14B8A6" rx="2" opacity="0.15"/>
+    <!-- Continuation line after peak -->
+    <polyline points="140,128 155,131 165,129"
+              fill="none" stroke="#BEE3F8" stroke-width="1.5" stroke-linejoin="round"/>
+    <!-- Data dots -->
+    <circle cx="20" cy="128" r="2.5" fill="#134078"/>
+    <circle cx="50" cy="129" r="2.5" fill="#134078"/>
+    <circle cx="80" cy="127" r="2.5" fill="#134078"/>
+    <circle cx="110" cy="128" r="2.5" fill="#134078"/>
+  </g>
+  <!-- Text -->
+  <text x="210" y="78" class="klar">Klar</text>
+  <text x="290" y="78" class="analytics">Analytics</text>
+  <text x="210" y="103" class="tagline">Diagnóstico empresarial con inteligencia artificial</text>
+</svg>

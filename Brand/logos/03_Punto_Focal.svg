@@ -1,0 +1,35 @@
+﻿<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 600 200" width="100%" height="100%">
+  <defs>
+    <style>
+      @import url('https://fonts.googleapis.com/css2?family=Inter:wght@300;700&amp;display=swap');
+      .klar { font-family: 'Inter', sans-serif; font-weight: 700; font-size: 42px; fill: #134078; }
+      .analytics { font-family: 'Inter', sans-serif; font-weight: 300; font-size: 42px; fill: #134078; }
+      .tagline { font-family: 'Inter', sans-serif; font-weight: 400; font-size: 11px; fill: #4B5563; }
+    </style>
+  </defs>
+  <!-- Punto Focal -->
+  <g transform="translate(100, 100)">
+    <!-- Outer ring -->
+    <circle cx="0" cy="0" r="72" fill="none" stroke="#BEE3F8" stroke-width="1.5"/>
+    <!-- Middle ring -->
+    <circle cx="0" cy="0" r="52" fill="none" stroke="#63B3ED" stroke-width="1.5"/>
+    <!-- Inner ring -->
+    <circle cx="0" cy="0" r="32" fill="none" stroke="#3182CE" stroke-width="2"/>
+    <!-- Center dot -->
+    <circle cx="0" cy="0" r="8" fill="#134078"/>
+    <!-- Precision crosshair -->
+    <line x1="-12" y1="0" x2="12" y2="0" stroke="#14B8A6" stroke-width="1.5"/>
+    <line x1="0" y1="-12" x2="0" y2="12" stroke="#14B8A6" stroke-width="1.5"/>
+    <!-- Radiating lines (subtle) -->
+    <line x1="0" y1="-80" x2="0" y2="-95" stroke="#14B8A6" stroke-width="1" opacity="0.3"/>
+    <line x1="0" y1="80" x2="0" y2="95" stroke="#14B8A6" stroke-width="1" opacity="0.3"/>
+    <line x1="-80" y1="0" x2="-95" y2="0" stroke="#14B8A6" stroke-width="1" opacity="0.3"/>
+    <line x1="80" y1="0" x2="95" y2="0" stroke="#14B8A6" stroke-width="1" opacity="0.3"/>
+    <line x1="-57" y1="-57" x2="-67" y2="-67" stroke="#14B8A6" stroke-width="1" opacity="0.2"/>
+    <line x1="57" y1="57" x2="67" y2="67" stroke="#14B8A6" stroke-width="1" opacity="0.2"/>
+  </g>
+  <!-- Text -->
+  <text x="210" y="86" class="klar">Klar</text>
+  <text x="290" y="86" class="analytics">Analytics</text>
+  <text x="210" y="111" class="tagline">Diagnóstico empresarial con inteligencia artificial</text>
+</svg>
