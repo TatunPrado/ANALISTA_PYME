@@ -61,7 +61,7 @@ def page_diagnosis():
         if st.button("🚀 Iniciar"):
             import google.generativeai as genai
             genai.configure(api_key=api_key)
-            model = genai.GenerativeModel("gemini-2.0-flash")
+            model = genai.GenerativeModel("gemini-1.5-flash")
             chat = model.start_chat(history=[])
             greeting = llamar_gemini(chat, f"Hola, la empresa es {company}.", "Error.", es_chat=True)
             if greeting:
