@@ -112,7 +112,7 @@ CSS = f"""
 # ── INICIALIZAR ENGINE (cacheada) ──
 @st.cache_resource
 def load_engine():
-    eng = KnowledgeEngine()
+    eng = KnowledgeEngine(base_path=str(ROOT))
     eng.init()
     return eng
 
@@ -183,7 +183,8 @@ def page_home():
             </div>""", unsafe_allow_html=True)
 
     if st.button("Comenzar diagnóstico →", type="primary"):
-        st.switch_page("streamlit_app")
+        st.session_state["page"] = "diagnosis"
+        st.rerun()
 
 
 def page_diagnosis():
@@ -384,7 +385,9 @@ def main():
                     'Claridad que transforma decisiones</div>', unsafe_allow_html=True)
         st.markdown("---")
 
-        menu = st.radio("", ["Inicio", "Diagnóstico"], label_visibility="collapsed")
+        menu = st.radio("", ["Inicio", "Diagnóstico"],
+                        index=0 if st.session_state.get("page") != "diagnosis" else 1,
+                        label_visibility="collapsed")
 
         st.markdown("---")
         st.markdown(f'<div style="color:{GRAY_400}; font-size:0.75rem;">'
@@ -393,15 +396,13 @@ def main():
                     'Klar Analytics © 2026</div>', unsafe_allow_html=True)
 
     # ── Routing de páginas ──
-    if menu == "Inicio" or "page" not in st.session_state:
-        page_home()
-    else:
-        page_diagnosis()
-
-    # Detectar botón "Comenzar diagnóstico"
-    if st.session_state.get("switch_page"):
+    if menu == "Diagnóstico" or st.session_state.get("page") == "diagnosis":
         st.session_state["page"] = "diagnosis"
-        st.rerun()
+        page_diagnosis()
+    else:
+        if "page" in st.session_state:
+            del st.session_state["page"]
+        page_home()
 
 
 if __name__ == "__main__":
