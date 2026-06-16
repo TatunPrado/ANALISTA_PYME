@@ -92,5 +92,8 @@ if __name__ == "__main__":
 # Úsalo temporalmente para ver qué modelos tienes
 import google.generativeai as genai
 # Después de genai.configure(api_key=api_key)
-models = [m.name for m in genai.list_models() if 'generateContent' in m.supported_methods]
+# Reemplaza la línea problemática por esto:
+import google.generativeai as genai
+models = [m.name for m in genai.list_models()]
+st.write(models) # Esto te mostrará en pantalla la lista exacta de modelos disponibles
 print(models)
