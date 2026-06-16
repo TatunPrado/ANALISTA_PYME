@@ -89,3 +89,8 @@ def main():
 
 if __name__ == "__main__":
     main()
+# Úsalo temporalmente para ver qué modelos tienes
+import google.generativeai as genai
+# Después de genai.configure(api_key=api_key)
+models = [m.name for m in genai.list_models() if 'generateContent' in m.supported_methods]
+print(models)
