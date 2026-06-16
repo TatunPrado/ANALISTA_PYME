@@ -2,11 +2,38 @@
 Klar Analytics — Diagnóstico Empresarial Interactivo
 App Streamlit con chat vía Google Gemini + KnowledgeEngine.
 """
+# 1. IMPORTS
 import sys, os, json, time
 from pathlib import Path
 import streamlit as st
 from PIL import Image, ImageDraw
 
+# 2. CONSTANTES (Aquí es donde estaba el problema, ponlas aquí arriba)
+DIMENSIONES = {
+    "finanzas": "Finanzas",
+    "estrategia": "Estrategia",
+    "operaciones": "Operaciones",
+    # ... (el resto de tus dimensiones)
+}
+
+AGENTES_POR_DIMENSION = {
+    "finanzas": "Financial_Analyst",
+    # ... (el resto de tus agentes)
+}
+
+# 3. FUNCIONES DE LÓGICA (KnowledgeEngine, llamar_gemini, etc.)
+def llamar_gemini(...):
+    # ...
+
+# 4. FUNCIONES DE PÁGINAS (page_diagnosis, page_home)
+def page_diagnosis():
+    # Ahora aquí dentro, DIMENSIONES será reconocida sin problemas
+    dims = [k for k, v in DIMENSIONES.items() if st.checkbox(v, key=f"dim_{k}")]
+    # ...
+
+# 5. MAIN
+def main():
+    # ...
 ROOT = Path(__file__).parent.resolve()
 sys.path.insert(0, str(ROOT))
 from KnowledgeEngine import KnowledgeEngine
