@@ -1,0 +1,21 @@
+maturity_levels:
+
+critical:
+min: 0
+max: 20
+
+weak:
+min: 21
+max: 40
+
+acceptable:
+min: 41
+max: 60
+
+solid:
+min: 61
+max: 80
+
+excellent:
+min: 81
+max: 100

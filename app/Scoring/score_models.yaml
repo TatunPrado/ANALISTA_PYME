@@ -1,0 +1,19 @@
+dimensions:
+
+finanzas:
+weight: 20
+
+estrategia:
+weight: 20
+
+operaciones:
+weight: 20
+
+talento:
+weight: 15
+
+riesgos:
+weight: 15
+
+tecnologia:
+weight: 10
