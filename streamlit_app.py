@@ -59,7 +59,7 @@ def page_diagnosis():
 
    # FASE 1: SETUP
 
-```python
+python
     # FASE 1: SETUP
     if st.session_state.phase == "setup":
 
@@ -151,7 +151,7 @@ Buscá comprender la situación actual de la empresa.
                     st.session_state.phase = "chat"
 
                     st.rerun()
-```
+
 
 
     # FASE 2: CHAT
