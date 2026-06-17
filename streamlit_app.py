@@ -59,7 +59,6 @@ def page_diagnosis():
 
    # FASE 1: SETUP
 
-python
     # FASE 1: SETUP
     if st.session_state.phase == "setup":
 
