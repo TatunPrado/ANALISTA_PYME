@@ -1,4 +1,4 @@
-d"""
+"""
 Klar Analytics — Diagnóstico Empresarial Interactivo
 App Streamlit con chat vía Google Gemini + KnowledgeEngine.
 """
