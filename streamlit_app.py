@@ -323,6 +323,7 @@ if phase == "setup":
 
     # ── CHAT ──
     if not st.session_state.diagnosis_done:
+        
     # ═══════════════════════════════════════════════════
     #  FASE 2: CHAT — conversación interactiva
     # ═══════════════════════════════════════════════════
