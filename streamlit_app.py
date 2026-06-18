@@ -10,7 +10,7 @@ def reset_diagnosis():
 def page_diagnosis():
     engine = load_engine()
     api_key = st.sidebar.text_input("🔑 Gemini API Key", type="password"),
-@@ -216,73 +211,70 @@ def page_diagnosis():
+def page_diagnosis():
         st.info("### Paso 1: Configurá tu API Key\n\n1. Andá a https://aistudio.google.com/apikey\n2. Creá una API Key (gratis, sin tarjeta)\n3. Pegala en el campo de la barra lateral 🔑\n\nDespués podés empezar el diagnóstico.")
         return
 
