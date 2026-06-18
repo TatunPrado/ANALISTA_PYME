@@ -261,6 +261,7 @@ for key in ("chat_history", "phase", "report"):
         st.session_state[key] = [] if key == "chat_history" else (None if key == "report" else "setup")
 
 phase = st.session_state.phase
+
     # ═══════════════════════════════════════════════════
     #  FASE 1: SETUP — formulario inicial
     # ═══════════════════════════════════════════════════
