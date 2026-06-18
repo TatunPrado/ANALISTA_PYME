@@ -353,10 +353,8 @@ if phase == "chat":
             st.rerun()
 
       col1, col2 = st.columns([1, 4])
-
-c1, c2, c3 = st.columns([2, 2, 1])
-
-with c1:
+      c1, c2, c3 = st.columns([2, 2, 1])
+      with c1:
             if st.button("📋 Generar diagnóstico final", type="primary", use_container_width=True):
                 transcript = "\n".join(
                     f"{'Cliente' if m['role']=='user' else 'Consultor'}: {m['content']}"
