@@ -258,7 +258,8 @@ def page_diagnosis():
    # ── INICIALIZAR SESIÓN ──
 for key in ("chat_history", "phase", "report"):
     if key not in st.session_state:
-        st.session_state[key] = [] if key == "chat_history" else (None if key == "report" else "setup")
+        st.session_state[key] = [] if key == "chat_history" else (None if key == "report" else "setup"
+                                                                 )
 
 phase = st.session_state.phase
 
