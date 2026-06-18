@@ -263,10 +263,10 @@ for key in ("chat_history", "phase", "report"):
 
 phase = st.session_state.phase
 
-    # ═══════════════════════════════════════════════════
-    #  FASE 1: SETUP — formulario inicial
-    # ═══════════════════════════════════════════════════
-   if phase == "setup":
+# ═══════════════════════════════════════════════════
+# FASE 1: SETUP — formulario inicial
+# ═══════════════════════════════════════════════════
+if phase == "setup":
         st.markdown("### Datos de la empresa")
         c1, c2 = st.columns(2)
         with c1:
