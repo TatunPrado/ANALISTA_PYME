@@ -265,7 +265,7 @@ phase = st.session_state.phase
     # ═══════════════════════════════════════════════════
     #  FASE 1: SETUP — formulario inicial
     # ═══════════════════════════════════════════════════
-    if phase == "setup":
+   if phase == "setup":
         st.markdown("### Datos de la empresa")
         c1, c2 = st.columns(2)
         with c1:
