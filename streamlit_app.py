@@ -255,17 +255,12 @@ def page_diagnosis():
                     st.session_state.employees = employees
                     st.session_state.selected_dims = dims
                     st.session_state.extra_context = extra
-    # ── INICIALIZAR SESIÓN ──
-    for key in ("chat_history", "phase", "report"):
-        if key not in st.session_state:
-            st.session_state[key] = [] if key == "chat_history" else (None if key == "report" else "setup")
+   # ── INICIALIZAR SESIÓN ──
+for key in ("chat_history", "phase", "report"):
+    if key not in st.session_state:
+        st.session_state[key] = [] if key == "chat_history" else (None if key == "report" else "setup")
 
-                    system_prompt = build_system_prompt(engine, dims)
-                    st.session_state.system_prompt = system_prompt
-    phase = st.session_state.phase
-
-                    st.session_state.setup_done = True
-                    st.session_state.chat_history = []
+phase = st.session_state.phase
     # ═══════════════════════════════════════════════════
     #  FASE 1: SETUP — formulario inicial
     # ═══════════════════════════════════════════════════
