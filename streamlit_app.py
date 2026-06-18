@@ -1,4 +1,4 @@
-@@ -202,11 +202,6 @@ def page_home():
+def page_home():
         st.session_state["page"] = "diagnosis"
         st.rerun()
 
