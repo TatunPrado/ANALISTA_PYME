@@ -55,11 +55,9 @@ def page_diagnosis():
     for key in ("chat_history", "phase", "report"):
         if key not in st.session_state:
             st.session_state[key] = [] if key == "chat_history" else (None if key == "report" else "setup")
-
                     system_prompt = build_system_prompt(engine, dims)
                     st.session_state.system_prompt = system_prompt
     phase = st.session_state.phase
-
                     st.session_state.setup_done = True
                     st.session_state.chat_history = []
     # ═══════════════════════════════════════════════════
@@ -81,7 +79,6 @@ def page_diagnosis():
             with cols_dim[i % 3]:
                 if st.checkbox(label, value=(key in ("finanzas", "operaciones", "estrategia")), key=f"dim_{key}"):
                     dims.append(key)
-
         if st.button("🚀 Iniciar conversación con el consultor", type="primary", use_container_width=True):
             errores = []
             if not company: errores.append("Ingresá el nombre de la empresa.")
@@ -119,7 +116,6 @@ def page_diagnosis():
                         st.error(f"Error conectando con Gemini. Revisá tu API Key e intentá de nuevo.\nDetalle: {e}")
                     st.rerun()
         return
-
     # ── CHAT ──
     if not st.session_state.diagnosis_done:
     # ═══════════════════════════════════════════════════
@@ -183,7 +179,6 @@ def page_diagnosis():
                 st.session_state.phase = "setup"
                 st.rerun()
         return
-
     # ── REPORTE FINAL ──
     # ═══════════════════════════════════════════════════
     #  FASE 3: DIAGNÓSTICO COMPLETO
@@ -208,5 +203,4 @@ def page_diagnosis():
             reset_diagnosis()
             st.session_state.phase = "setup"
             st.rerun()
-
 def main():
