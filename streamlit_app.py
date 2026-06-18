@@ -321,9 +321,9 @@ if phase == "setup":
                     st.rerun()
         return
 
-    # ── CHAT ──
-    if not st.session_state.diagnosis_done:
-        
+   # ── CHAT ──
+
+if phase == "chat":
     # ═══════════════════════════════════════════════════
     #  FASE 2: CHAT — conversación interactiva
     # ═══════════════════════════════════════════════════
