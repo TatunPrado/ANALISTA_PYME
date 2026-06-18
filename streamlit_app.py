@@ -9,19 +9,17 @@ def reset_diagnosis():
 
 def page_diagnosis():
     engine = load_engine()
-    api_key = st.sidebar.text_input("🔑 Gemini API Key", type="password"),
-def page_diagnosis():
-        st.info("### Paso 1: Configurá tu API Key\n\n1. Andá a https://aistudio.google.com/apikey\n2. Creá una API Key (gratis, sin tarjeta)\n3. Pegala en el campo de la barra lateral 🔑\n\nDespués podés empezar el diagnóstico.")
-        return
+    api_key = st.sidebar.text_input("🔑 Gemini API Key", type="password")
 
-    if "chat_history" not in st.session_state:
-        st.session_state.chat_history = []
-    if "diagnosis_done" not in st.session_state:
-        st.session_state.diagnosis_done = False
-    if "report" not in st.session_state:
-        st.session_state.report = None
-    if "setup_done" not in st.session_state:
-        st.session_state.setup_done = False
+    if not api_key:
+        st.info(
+            "### Paso 1: Configurá tu API Key\n\n"
+            "1. Andá a https://aistudio.google.com/apikey\n"
+            "2. Creá una API Key (gratis, sin tarjeta)\n"
+            "3. Pegala en el campo de la barra lateral 🔑\n\n"
+            "Después podés empezar el diagnóstico."
+        )
+        return
 
     # ── SETUP ──
     if not st.session_state.setup_done:
@@ -131,7 +129,7 @@ def page_diagnosis():
         st.markdown(f"### Conversación con {st.session_state.company}")
         dims = st.session_state.selected_dims
         badges = "".join(f'<span class="badge badge-blue" style="background:{BLUE_100};color:{BLUE_800};padding:2px 10px;border-radius:12px;margin:2px;font-size:0.8rem;">{DIMENSIONES.get(d,d)}</span>' for d in dims)
-@@ -298,52 +290,56 @@ def page_diagnosis():
+def page_diagnosis():
             try:
                 import google.generativeai as genai
                 genai.configure(api_key=api_key)
