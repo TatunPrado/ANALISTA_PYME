@@ -304,7 +304,7 @@ def page_diagnosis():
         dims = []
         for i, (key, label) in enumerate(DIMENSIONES.items()):
             with cols_dim[i % 3]:
-                if st.checkbox(label, value=(key in ("finanzas", "operaciones", "estrategia")), key=f"dim_{key}"):
+                if st.checkbox(label, value=True, key=f"dim_{key}"):
                     dims.append(key)
 
         if st.button("🚀 Iniciar conversación con el consultor", type="primary", use_container_width=True):
@@ -347,15 +347,35 @@ def page_diagnosis():
     #  FASE 2: CHAT — conversación interactiva
     # ═══════════════════════════════════════════════════
     if phase == "chat":
-        st.markdown(f"### Conversación con {st.session_state.company}")
+        company = st.session_state.company
         dims = st.session_state.selected_dims
-        badges = "".join(f'<span class="badge badge-blue" style="background:{BLUE_100};color:{BLUE_800};padding:2px 10px;border-radius:12px;margin:2px;font-size:0.8rem;">{DIMENSIONES.get(d,d)}</span>' for d in dims)
-        st.markdown(f"Dimensiones activas: {badges}", unsafe_allow_html=True)
-
-        dims_totales = len(st.session_state.selected_dims)
+        dims_totales = len(dims)
         user_msgs = sum(1 for m in st.session_state.chat_history if m["role"] == "user")
-        progreso = min(user_msgs / (dims_totales * 3), 1.0)
-        st.progress(progreso, text=f"Progreso del diagnóstico — {user_msgs} respuestas dadas")
+
+        # ── Etapa actual estimada ──
+        msgs_por_dim = 3
+        dim_idx = min(user_msgs // msgs_por_dim, dims_totales - 1) if dims_totales > 0 else 0
+        dim_actual = DIMENSIONES.get(dims[dim_idx], dims[dim_idx]) if dims else ""
+        progreso = min(user_msgs / (dims_totales * msgs_por_dim), 1.0)
+
+        # ── Header con marca + progreso ──
+        st.markdown(f"""<div style="background:linear-gradient(135deg,{BLUE_800},{BLUE_700});border-radius:12px;padding:1rem 1.5rem;margin-bottom:1rem;">
+            <div style="display:flex;justify-content:space-between;align-items:center;color:white;">
+                <div><strong style="font-size:1.1rem;">Klar Analytics</strong><br>
+                <span style="font-size:0.85rem;opacity:0.9;">{company}</span></div>
+                <div style="text-align:right;font-size:0.85rem;opacity:0.9;">
+                    {dim_idx+1} de {dims_totales} dimensiones · {user_msgs} respuestas
+                </div>
+            </div>
+        </div>""", unsafe_allow_html=True)
+
+        col_pbar, col_stage = st.columns([3, 1])
+        with col_pbar:
+            st.progress(progreso)
+        with col_stage:
+            st.markdown(f"""<div style="background:{BLUE_100};border-radius:8px;padding:0.3rem 0.8rem;text-align:center;font-size:0.85rem;font-weight:500;color:{BLUE_800};">
+                {'➡ ' + dim_actual if dim_actual else 'Completando'}
+            </div>""", unsafe_allow_html=True)
 
         st.markdown("---")
 
