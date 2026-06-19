@@ -251,7 +251,7 @@ def page_diagnosis():
                         import google.generativeai as genai
                         genai.configure(api_key=api_key)
                         system_prompt = build_system_prompt(engine, dims)
-                        model = genai.GenerativeModel("gemini-2.0-flash", system_instruction=system_prompt)
+                        model = genai.GenerativeModel("gemini-3.1-flash-lite", system_instruction=system_prompt)
                         chat = model.start_chat(history=[])
                         greeting = chat.send_message(
                             f"El cliente se llama {company}. "
@@ -315,7 +315,7 @@ def page_diagnosis():
                         import google.generativeai as genai
                         genai.configure(api_key=api_key)
                         report_prompt = build_report_prompt(engine, dims, transcript)
-                        model = genai.GenerativeModel("gemini-2.0-flash")
+                        model = genai.GenerativeModel("gemini-3.1-flash-lite")
                         resp = model.generate_content(report_prompt)
                         st.session_state.report = resp.text
                         st.session_state.phase = "done"
