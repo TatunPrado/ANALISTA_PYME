@@ -188,11 +188,17 @@ def build_system_prompt(engine, dims):
     parts.append(_build_knowledge_section(context, dims))
     parts.extend([
         "",
+        "REGLA DE ORO (Micro-Insights):",
+        "Cada 3 respuestas del usuario, interrumpí brevemente el formato de preguntas para ofrecer",
+        "un 'Micro-Insight' (ej: 'Basado en tu respuesta, esto es un riesgo operativo típico en tu sector...').",
+        "Mantené esto breve (máximo 2 líneas). Esto cambia la percepción de 'interrogatorio' a 'asesoría'.",
+        "",
         "ESTRUCTURA:",
         "1. Preguntá por el contexto general (rubro, tamaño, mercado).",
         "2. Abordá cada dimensión con preguntas basadas en sus metodologías y marcos.",
         "3. Identificá patrones aplicables según lo que cuenta el cliente.",
-        "4. Al final, preguntá si quiere agregar algo más.",
+        "4. Cada 3 respuestas, ofrecé un Micro-Insight de 1-2 líneas.",
+        "5. Al final, preguntá si quiere agregar algo más.",
         "",
         "FORMATO: español, párrafos cortos, emojis con moderación.",
     ])
@@ -345,6 +351,12 @@ def page_diagnosis():
         dims = st.session_state.selected_dims
         badges = "".join(f'<span class="badge badge-blue" style="background:{BLUE_100};color:{BLUE_800};padding:2px 10px;border-radius:12px;margin:2px;font-size:0.8rem;">{DIMENSIONES.get(d,d)}</span>' for d in dims)
         st.markdown(f"Dimensiones activas: {badges}", unsafe_allow_html=True)
+
+        dims_totales = len(st.session_state.selected_dims)
+        user_msgs = sum(1 for m in st.session_state.chat_history if m["role"] == "user")
+        progreso = min(user_msgs / (dims_totales * 3), 1.0)
+        st.progress(progreso, text=f"Progreso del diagnóstico — {user_msgs} respuestas dadas")
+
         st.markdown("---")
 
         for msg in st.session_state.chat_history:
