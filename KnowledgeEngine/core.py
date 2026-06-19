@@ -256,9 +256,10 @@ class KnowledgeEngine:
         if dimensions:
             selected_proc = {}
             for dim in dimensions:
+                aliases = self.config.dimension_aliases.get(dim, [dim])
                 for proc in self._artifacts.get("processes", []):
-                    title = (proc.get("title") or "").lower()
-                    if dim in title:
+                    text = ((proc.get("title") or "") + " " + (proc.get("filename") or "")).lower()
+                    if any(a in text for a in aliases):
                         selected_proc[id(proc)] = proc
             context["processes"] = list(selected_proc.values())
 
