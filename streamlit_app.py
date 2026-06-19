@@ -379,9 +379,11 @@ def page_diagnosis():
 
         st.markdown("---")
 
-        for msg in st.session_state.chat_history:
-            with st.chat_message(msg["role"]):
-                st.markdown(msg["content"])
+        chat_container = st.container(height=450, border=True)
+        with chat_container:
+            for msg in st.session_state.chat_history:
+                with st.chat_message(msg["role"]):
+                    st.markdown(msg["content"])
 
         if prompt := st.chat_input("Escribí tu respuesta..."):
             st.session_state.chat_history.append({"role": "user", "content": prompt})
