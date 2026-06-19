@@ -81,99 +81,162 @@ def load_engine():
     eng = KnowledgeEngine(base_path=str(ROOT))
     eng.init()
     return eng
+def _find_in_list(items, name_key):
+    name_key = name_key.lower().replace("_", "-").replace(" ", "-")
+    for item in items:
+        fname = (item.get("filename") or "").lower().replace("_", "-").replace(" ", "-")
+        title = (item.get("title") or "").lower().replace("_", "-").replace(" ", "-")
+        if name_key in fname or name_key in title:
+            return item
+    return None
 
-def build_system_prompt(engine, dims):
-    context = engine.build_context(dimensions=dims)
-    lines = [
-        "Sos un consultor senior de Klar Analytics especializado en diagnóstico empresarial para PyMEs.",
-        "Tu objetivo es entrevistar al dueño o gerente de una PyME para relevar información sobre su empresa.",
-        "",
-        "REGLAS DE CONDUCTA:",
-        "- Saludá al usuario y presentate como consultor de Klar Analytics.",
-        "- Hacé UNA pregunta por vez. No bombardees con preguntas múltiples.",
-        "- Usá un tono profesional pero cercano, en español.",
-        "- Después de 3-4 intercambios sobre un tema, avanzá naturalmente al siguiente.",
-        "- Cubrí TODAS las dimensiones seleccionadas por el usuario.",
-        "- Cuando hayas cubierto todas, ofrecé generar el diagnóstico final.",
-        "",
-        "DIMENSIONES A DIAGNOSTICAR:",
-    ]
+
+def _extract_body(item, limit=600):
+    for key in ("descripción", "description", "descripcion", "summary", "objetivo"):
+        body = item.get("sections", {}).get(key, {}).get("body", "")
+        if body:
+            return body[:limit]
+    return (item.get("description") or "")[:limit]
+
+
+def _artifact_dim_score(dim, artifact):
+    """Score how relevant an artifact is to a dimension using its aliases."""
+    from KnowledgeEngine.config import get_config
+    aliases = get_config().dimension_aliases.get(dim, [dim])
+    text = (
+        (artifact.get("title") or "") + " " +
+        (artifact.get("filename") or "") + " " +
+        " ".join(artifact.get("tags", []))
+    ).lower()
+    score = 0
+    for alias in aliases:
+        if alias in text:
+            score += 1
+    return score
+
+
+def _build_knowledge_section(context, dims):
+    """Build a structured knowledge-base block for the prompt."""
+    parts = ["=== BASE DE CONOCIMIENTO ==="]
+
+    # 1. Per dimension: agent role + metodologías + frameworks + patrones
     for d in dims:
         label = DIMENSIONES.get(d, d)
         agent_name = AGENTES_POR_DIMENSION.get(d, "")
-        agent_def = None
-        for a in context.get("agents", []):
-            if agent_name.lower() in (a.get("filename") or "").lower():
-                agent_def = a
-                break
-        lines.append(f"\n--- {label} (agente: {agent_name}) ---")
-        if agent_def:
-            lines.append(agent_def.get("description", ""))
-            skills = agent_def.get("skills", [])
-            if skills:
-                lines.append("Áreas de indagación: " + ", ".join(skills))
-        for fw in context.get("frameworks", []):
-            title = (fw.get("title") or "").lower()
-            if d in title or d[:-1] in title:
-                body = fw.get("sections", {}).get("descripción", {}).get("body", "") or fw.get("sections", {}).get("description", {}).get("body", "")
-                if body:
-                    lines.append(f"Marco de referencia: {body[:500]}")
+        parts.append(f"\n--- {label} ---")
 
-    lines.extend([
+        agent_def = _find_in_list(context.get("agents", []), agent_name)
+        if agent_def:
+            parts.append(agent_def.get("description", ""))
+            for sn in agent_def.get("skills", []):
+                skill = _find_in_list(context.get("skills", []), sn)
+                if skill:
+                    parts.append(f"\nMetodología: {skill.get('title', '')}")
+                    sd = skill.get("description", "")
+                    if sd:
+                        parts.append(sd[:400])
+                    for sn2, sdata in skill.get("sections", {}).items():
+                        body = sdata.get("body", "") if isinstance(sdata, dict) else ""
+                        if body and len(body) > 80:
+                            parts.append(f"  {body[:400]}")
+
+        for fw in context.get("frameworks", []):
+            if _artifact_dim_score(d, fw) > 0:
+                parts.append(f"\nMarco: {fw.get('title', '')}")
+                body = _extract_body(fw, 500)
+                if body:
+                    parts.append(body)
+
+        rel_pats = [p for p in context.get("patterns", []) if _artifact_dim_score(d, p) > 0]
+        if rel_pats:
+            parts.append(f"\nPatrones ({len(rel_pats)} disponibles):")
+            for p in rel_pats[:5]:
+                pd = p.get("description", "")[:150]
+                if pd:
+                    parts.append(f"  · {p.get('title', '') or p.get('filename', '')}: {pd}")
+
+        for proc in context.get("processes", []):
+            if _artifact_dim_score(d, proc) > 0:
+                parts.append(f"Proceso: {proc.get('title', '')}")
+
+    # 2. Playbooks (shared)
+    for pb in context.get("playbooks", []):
+        parts.append(f"\nPlaybook: {pb.get('title', '')}")
+        desc = pb.get("description", "")[:300]
+        if desc:
+            parts.append(desc)
+
+    return "\n".join(parts)
+
+
+def build_system_prompt(engine, dims):
+    context = engine.build_context(dimensions=dims)
+    parts = [
+        "Sos un consultor senior de Klar Analytics especializado en diagnóstico empresarial para PyMEs.",
+        "Tu objetivo es entrevistar al dueño o gerente para relevar información sobre su empresa.",
         "",
-        "ESTRUCTURA DE LA ENTREVISTA:",
-        "1. Preguntá primero por el contexto general de la empresa (rubro, tamaño, mercado).",
-        "2. Luego abordá cada dimensión una por una, con preguntas específicas.",
-        "3. Finalmente, preguntá si quiere agregar algo más.",
+        "REGLAS DE CONDUCTA:",
+        "- Saludá al usuario y presentate como consultor de Klar Analytics.",
+        "- Hacé UNA pregunta por vez. No bombardees.",
+        "- Usá tono profesional pero cercano, en español.",
+        "- Después de 3-4 intercambios sobre un tema, avanzá al siguiente.",
+        "- Basá tus preguntas en las metodologías, marcos y patrones listados.",
+        "- Cubrí TODAS las dimensiones seleccionadas.",
+        "- Cuando hayas cubierto todas, ofrecé generar el diagnóstico final.",
         "",
-        "FORMATO DE RESPUESTA:",
-        "- Respondé en español, con párrafos cortos.",
-        "- Usá emojis con moderación.",
-        "- Si el usuario se desvía, retomá el hilo amablemente.",
-        "- Cuando termines todas las dimensiones, decí: 'He cubierto todas las áreas. ¿Querés que genere el diagnóstico final?'",
+    ]
+    parts.append(_build_knowledge_section(context, dims))
+    parts.extend([
+        "",
+        "ESTRUCTURA:",
+        "1. Preguntá por el contexto general (rubro, tamaño, mercado).",
+        "2. Abordá cada dimensión con preguntas basadas en sus metodologías y marcos.",
+        "3. Identificá patrones aplicables según lo que cuenta el cliente.",
+        "4. Al final, preguntá si quiere agregar algo más.",
+        "",
+        "FORMATO: español, párrafos cortos, emojis con moderación.",
     ])
-    return "\n".join(lines)
+    return "\n".join(parts)
+
 
 def build_report_prompt(engine, dims, transcript):
     context = engine.build_context(dimensions=dims)
-    lines = [
-        "Sos un consultor senior de Klar Analytics. Generá un diagnóstico empresarial estructurado en base a la siguiente conversación con el cliente.",
+    parts = [
+        "Sos un consultor senior de Klar Analytics. Generá un diagnóstico empresarial estructurado.",
         "",
         "DIMENSIONES ANALIZADAS: " + ", ".join(DIMENSIONES.get(d, d) for d in dims),
+        "",
+    ]
+    parts.append(_build_knowledge_section(context, dims))
+    parts.extend([
         "",
         "TRANSCRIPCIÓN DE LA ENTREVISTA:",
         transcript,
         "",
-        "INSTRUCCIONES:",
-        "Generá un informe con esta estructura exacta (en markdown):",
+        "INSTRUCCIONES — Generá un informe en markdown con esta estructura:",
         "",
         "# Diagnóstico Klar Analytics — [Nombre de la empresa]",
         "",
         "## Resumen Ejecutivo",
-        "2-3 párrafos con los hallazgos más importantes.",
+        "2-3 párrafos citando los marcos usados.",
         "",
         "## Análisis por Dimensión",
-        "Para cada dimensión analizada:",
         "### [Nombre de la dimensión]",
-        "- **Hallazgos clave:** (2-3 puntos)",
-        "- **Fortalezas detectadas:**",
+        "- **Metodología aplicada:** [frameworks/patrones usados]",
+        "- **Hallazgos clave:**",
+        "- **Fortalezas:**",
         "- **Áreas de mejora:**",
-        "- **Recomendaciones:** (2-3 acciones concretas)",
+        "- **Recomendaciones:** (2-3 acciones citando patrones)",
         "",
         "## Priorización",
-        "Ordenar las recomendaciones por impacto y urgencia (tabla simple):",
-        "| Prioridad | Acción | Dimensión | Impacto |",
+        "| Prioridad | Acción | Dimensión | Impacto | Plazo |",
         "",
         "## Plan de Acción",
-        "3-5 acciones concretas con plazo estimado y responsable sugerido.",
+        "3-5 acciones con plazo y responsable.",
         "",
-        "IMPORTANTE:",
-        "- Usá los frameworks y metodologías de Klar Analytics como referencia.",
-        "- Sé específico, no genérico. Basate en lo que dijo el usuario.",
-        "- Si faltó información en alguna dimensión, mencionarlo como limitación.",
-        "- Extensión: entre 800 y 1500 palabras.",
-    ]
-    return "\n".join(lines)
+        "IMPORTANTE: citá los frameworks y patrones de Klar Analytics usados. Sé específico, no genérico. Extensión: 1000-2000 palabras.",
+    ])
+    return "\n".join(parts)
 
 def page_home():
     st.markdown("## Bienvenido a Klar Analytics")
